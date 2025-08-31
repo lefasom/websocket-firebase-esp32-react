@@ -118,8 +118,13 @@ def handle_message(conn, message):
     try:
         data = json.loads(message)   # message es un str -> ahora data es un dict
         if data.get("content") == "agregar_huella":
-            print("Ejecutando comando AGREGAR HUELLA")
-
+            logger = get_logger(conn)
+            resp = r307_sensor.agregar_huella(logger)
+            if resp != False :
+                logger("usuario agregado con EXITO")
+                sleep(3)
+            else:
+                logger("Hubo un ERROR, reintentar")
         elif data.get("content") == "detectar_huella":
             logger = get_logger(conn)
             r307_sensor.detectar_huella(logger)

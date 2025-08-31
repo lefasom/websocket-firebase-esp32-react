@@ -206,7 +206,7 @@ def generar_timestamp():
 def wait_for_finger_press(timeout, message,logger):
     """Espera activamente a que un dedo sea colocado en el sensor."""
     print(f"⏳ {message} ({timeout}s)...")
-    logger("prueba")
+    logger(f"{message} ({timeout}s)...")
     
     start_time = time.time()
     packet_get_image = bytes(
@@ -216,23 +216,28 @@ def wait_for_finger_press(timeout, message,logger):
     while (time.time() - start_time) < timeout:
         response = send_command(packet_get_image)
         if response and response[9] == 0x00:
-            print("✅ ¡Huella detectada!")
-            
+            print("¡Huella detectada!, Levanta el dedo")
+            logger("¡Huella detectada!, Levanta el dedo")
+            time.sleep(3)
             return True, response
         elif response and response[9] == 0x02:
             time.sleep(PAUSA_CORTA)
         else:
             time.sleep(PAUSA_CORTA)
             
-    print("⏰ Tiempo de espera agotado.")
+    print("Tiempo de espera agotado.")
+    logger("Tiempo de espera agotado.")
+    
     return False, None
 
 
-def wait_for_finger_release(timeout, message):
+def wait_for_finger_release(timeout, message,logger):
     """Espera activamente a que un dedo sea levantado del sensor."""
-    print(f"☝️ {message} ({timeout}s)...")
     if message=='':
-       send_data("display", {"mensaje": message})
+        logger("...")
+    else:
+        print(f" {message} ({timeout}s)...")
+        logger(f" {message} ({timeout}s)...")
     
     start_time = time.time()
     packet_get_image = bytes(
@@ -242,27 +247,26 @@ def wait_for_finger_release(timeout, message):
     while (time.time() - start_time) < timeout:
         response = send_command(packet_get_image)
         if response and response[9] == 0x02:
-            # send_data("display", {"mensaje": "Dedo levantado"})
-            print("✅ Dedo levantado.")
             return True
         elif response and response[9] == 0x00:
             time.sleep(PAUSA_CORTA)
         else:
             time.sleep(PAUSA_CORTA)
             
-    
-    send_data("display", {"mensaje": " Tiempo de espera agotado. El dedo no fue levantado."})
-    print("⏰ Tiempo de espera agotado. El dedo no fue levantado.")
+    print("Tiempo de espera agotado. El dedo no fue levantado.")
+    logger("Tiempo de espera agotado. El dedo no fue levantado.")
     return False
 
 
-def agregar_huella():
+def agregar_huella(logger=print):
     print("=== AGREGAR NUEVA HUELLA ===")
+    logger("=== AGREGAR NUEVA HUELLA ===")
     posicion = obtener_siguiente_posicion()
     print(f"Usando posición: {posicion}")
-    send_data("display", {"mensaje": f"Usando posicion: {posicion}"}) 
+    logger(f"Usando posición: {posicion}")
 
-    success, _ = wait_for_finger_press(TIMEOUT_SEGUNDOS, "Coloque el dedo")
+    success, _ = wait_for_finger_press(TIMEOUT_SEGUNDOS, "Coloque el dedo",logger)
+    print("success",success)
     if not success:
         return False
 
@@ -274,10 +278,10 @@ def agregar_huella():
     if not (response and response[9] == 0x00):
         return False
 
-    if not wait_for_finger_release(TIMEOUT_SEGUNDOS,''):
-        return False
+    # if not wait_for_finger_release(TIMEOUT_SEGUNDOS,'Levante el dedo',logger):
+    #     return False
 
-    success, _ = wait_for_finger_press(TIMEOUT_SEGUNDOS, "Coloque el dedo nuevamente")
+    success, _ = wait_for_finger_press(TIMEOUT_SEGUNDOS, "Coloque el dedo nuevamente",logger)
     if not success:
         return False
 

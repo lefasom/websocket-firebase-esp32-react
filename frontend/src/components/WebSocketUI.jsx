@@ -6,9 +6,7 @@ function WebSocketUI({ status, messages, onSend }) {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>WebSocket con ESP32 y React (Ping-Pong)</h1>
       <p>Estado: <strong>{status}</strong></p>
-      <p>Asegúrate de que tu computadora y el ESP32 estén en la misma red Wi-Fi.</p>
       <button 
         onClick={()=>handleSend("agregar_huella")} 
         disabled={status !== 'Conectado'}
