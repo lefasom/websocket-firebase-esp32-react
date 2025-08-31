@@ -121,13 +121,15 @@ def handle_message(conn, message):
             print("Ejecutando comando AGREGAR HUELLA")
 
         elif data.get("content") == "detectar_huella":
-            r307_sensor.detectar_huella()
+            logger = get_logger(conn)
+            r307_sensor.detectar_huella(logger)
 
 
         else:
             print("Esperando nuevos comandos")
-            response = "Esperando nuevos comandos"
-            # send_websocket_message(conn, response)
+            logger = get_logger(conn)
+            logger("Esperando nuevos comandos...")
+
 
 
 
@@ -193,3 +195,15 @@ def send_websocket_message(conn, message):
         
     except Exception as e:
         print("Error al enviar mensaje:", e)
+        
+def get_logger(conn):
+    """
+    Devuelve una función logger que envía mensajes tanto por print como por WebSocket.
+    """
+    def logger(message):
+        print(message)  # sigue imprimiendo en consola
+        try:
+            send_websocket_message(conn, message)  # lo manda al cliente
+        except Exception as e:
+            print("⚠️ Error enviando log:", e)
+    return logger

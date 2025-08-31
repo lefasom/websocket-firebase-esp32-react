@@ -203,10 +203,10 @@ def generar_timestamp():
     return time.ticks_ms()
 
 
-def wait_for_finger_press(timeout, message):
+def wait_for_finger_press(timeout, message,logger):
     """Espera activamente a que un dedo sea colocado en el sensor."""
     print(f"⏳ {message} ({timeout}s)...")
-
+    logger("prueba")
     
     start_time = time.time()
     packet_get_image = bytes(
@@ -356,11 +356,11 @@ def agregar_huella():
         return False
 
 
-def detectar_huella():
+def detectar_huella(logger=print):
     print("=== DETECTAR HUELLA ===")
     # send_data("display", {"mensaje":"Esperando Huella"})
     
-    success, _ = wait_for_finger_press(TIMEOUT_SEGUNDOS, "Esperando huella")
+    success, _ = wait_for_finger_press(TIMEOUT_SEGUNDOS, "Esperando huella",logger)
     if not success:
         return None
 
