@@ -1,4 +1,7 @@
 # websocket.py
+from firebase_utils import get_data, send_data
+import r307_sensor
+from time import sleep
 
 # Importa las librerías necesarias para el protocolo WebSocket
 import hashlib
@@ -113,7 +116,35 @@ def handle_message(conn, message):
     Aquí puedes añadir tu lógica (ej. controlar un LED, enviar un dato a un sensor).
     """
     try:
-        print("Mensaje recibido:", message)
+        data = json.loads(message)   # message es un str -> ahora data es un dict
+        if data.get("content") == "agregar_huella":
+            print("Ejecutando comando AGREGAR HUELLA")
+
+        elif data.get("content") == "detectar_huella":
+            r307_sensor.detectar_huella()
+
+
+        else:
+            print("Esperando nuevos comandos")
+            response = "Esperando nuevos comandos"
+            # send_websocket_message(conn, response)
+
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         # Intenta parsear como JSON para manejar ping-pong
         try:
@@ -124,21 +155,6 @@ def handle_message(conn, message):
                 # Responde con pong
                 pong_response = json.dumps({'type': 'pong'})
                 send_websocket_message(conn, pong_response)
-                
-            elif data.get('type') == 'message':
-                print("💌 Mensaje de usuario:", data.get('content', ''))
-                # Aquí puedes agregar tu lógica para manejar mensajes del usuario
-                
-                # Ejemplo: responder al cliente
-                response = json.dumps({
-                    'type': 'response', 
-                    'content': 'Mensaje recibido: ' + str(data.get('content', ''))
-                })
-                send_websocket_message(conn, response)
-                
-            else:
-                print("Tipo de mensaje desconocido:", data.get('type'))
-                
         except:
             # Si no es JSON válido, trata como mensaje normal
             print("Mensaje de texto simple:", message)

@@ -1,6 +1,6 @@
 function WebSocketUI({ status, messages, onSend }) {
-  const handleSend = () => {
-    const msg = "¡Hola desde React te envío un mensaje!";
+  const handleSend = (e) => {
+    const msg = e;
     onSend(msg);
   };
 
@@ -10,7 +10,7 @@ function WebSocketUI({ status, messages, onSend }) {
       <p>Estado: <strong>{status}</strong></p>
       <p>Asegúrate de que tu computadora y el ESP32 estén en la misma red Wi-Fi.</p>
       <button 
-        onClick={handleSend} 
+        onClick={()=>handleSend("agregar_huella")} 
         disabled={status !== 'Conectado'}
         style={{
           padding: '10px 20px', 
@@ -18,7 +18,18 @@ function WebSocketUI({ status, messages, onSend }) {
           cursor: status === 'Conectado' ? 'pointer' : 'not-allowed'
         }}
       >
-        Enviar mensaje
+       AGREGAR
+      </button>
+         <button 
+        onClick={()=>handleSend("detectar_huella")} 
+        disabled={status !== 'Conectado'}
+        style={{
+          padding: '10px 20px', 
+          fontSize: '16px', 
+          cursor: status === 'Conectado' ? 'pointer' : 'not-allowed'
+        }}
+      >
+        DETECTAR
       </button>
       <hr />
       <h2>Mensajes Recibidos:</h2>
