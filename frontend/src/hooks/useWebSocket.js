@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 
 const WEBSOCKET_URL = 'ws://192.168.100.15:80'; 
 const RECONNECT_TIMEOUT = 3000; 
-const PING_INTERVAL = 30000; 
-const PONG_TIMEOUT = 5000; 
+const PING_INTERVAL = 60000; 
+const PONG_TIMEOUT = 10000; 
 
 export function useWebSocket() {
     const [messages, setMessages] = useState([]);
@@ -78,9 +78,9 @@ export function useWebSocket() {
                         handlePong();
                         return;
                     }
-                    setMessages(prev => [...prev, event.data]);
+                    setMessages([event.data]);
                 } catch {
-                    setMessages(prev => [...prev, event.data]);
+                  setMessages([event.data]);
                 }
             };
 

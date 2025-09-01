@@ -127,13 +127,17 @@ def handle_message(conn, message):
                 logger("Hubo un ERROR, reintentar")
         elif data.get("content") == "detectar_huella":
             logger = get_logger(conn)
-            r307_sensor.detectar_huella(logger)
-
-
+            resp = r307_sensor.detectar_huella(logger)
+            if resp != False :
+                logger("usuario reconocido con EXITO")
+                sleep(3)
+            else:
+                logger("usuario NO reconocido")
+                
         else:
             print("Esperando nuevos comandos")
             logger = get_logger(conn)
-            logger("Esperando nuevos comandos...")
+            logger("Esperando nuevos comandos")
 
 
 
